@@ -1,5 +1,7 @@
 package subscriptionsForWooCommerce;
 
+import static org.junit.Assert.assertTrue;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -23,7 +25,7 @@ public class Test01_ActivateDeactivate {
 		driver.manage().window().maximize();
 		
 		// Login admin
-		driver.get("http://localhost:10008/wp-admin/");
+		driver.get("http://localhost:10003/wp-admin/");
 		driver.findElement(By.id("user_login")).sendKeys("root");
 		driver.findElement(By.id("user_pass")).sendKeys("root");
 		driver.findElement(By.id("wp-submit")).click();
@@ -39,6 +41,15 @@ public class Test01_ActivateDeactivate {
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//p[normalize-space()='Plugin activated.']")));
 		driver.findElement(By.xpath("//p[normalize-space()='Plugin activated.']"));
 		System.out.println("Activation Success message printed");
+		
+		//Verify link with plugin description.
+		assertTrue(driver.findElement(By.xpath("//tr[@data-slug='subscriptions-for-woocommerce']//a[contains(text(),'Settings')]")).isDisplayed());
+		assertTrue(driver.findElement(By.xpath("//a[@id='deactivate-subscriptions-for-woocommerce']")).isDisplayed());
+		assertTrue(driver.findElement(By.xpath("//a[@href='https://makewebbetter.com/?utm_source=MWB-subscriptions-backend&utm_medium=MWB-ORG-backend&utm_campaign=MWB-backend']")).isDisplayed());
+		assertTrue(driver.findElement(By.xpath("//a[@aria-label='More information about Subscriptions For WooCommerce']")).isDisplayed());
+		assertTrue(driver.findElement(By.xpath("//a[normalize-space()='Free Demo']")).isDisplayed());
+		assertTrue(driver.findElement(By.xpath("//a[@href='https://docs.makewebbetter.com/subscriptions-for-woocommerce/?utm_source=MWB-subscriptions-backend&utm_medium=MWB-docORG-backend&utm_campaign=MWB-backend']")).isDisplayed());
+		assertTrue(driver.findElement(By.xpath("//a[@href='https://makewebbetter.com/submit-query/']")).isDisplayed());
 		
 		// Check MakeWebBetter Sub-menu
 		Actions actions = new Actions(driver);
@@ -76,6 +87,7 @@ public class Test01_ActivateDeactivate {
 				driver.findElement(By.xpath("//input[@value='temporary-deactivation-for-debug']")).click();
 				driver.findElement(By.xpath("//textarea[@id='mwb-sfw-deactivation-reason-text']")).sendKeys("Chirag Gupta QA");
 				driver.findElement(By.cssSelector("input[value='Send Us']")).click();
+				//driver.findElement(By.xpath("//a[normalize-space()='Skip and Deactivate Now']")).click();
 				System.out.println("Deactivation form present and submitted at: " + dt.format(now));
 				
 				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//p[normalize-space()='Plugin deactivated.']")));
