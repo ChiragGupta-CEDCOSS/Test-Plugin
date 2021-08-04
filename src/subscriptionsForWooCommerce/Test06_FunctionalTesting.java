@@ -1,6 +1,9 @@
 package subscriptionsForWooCommerce;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -30,17 +33,17 @@ public class Test06_FunctionalTesting {
 		driver.findElement(By.id("user_login")).sendKeys("root");
 		driver.findElement(By.id("user_pass")).sendKeys("root");
 		driver.findElement(By.id("wp-submit")).click();
-
-		// Activate plugin
+//
+//		// Activate plugin
 		WebDriverWait wait = new WebDriverWait(driver, 30);
-//		driver.findElement(By.cssSelector(
-//				"a[class='wp-has-submenu wp-not-current-submenu menu-top menu-icon-plugins'] div[class='wp-menu-name']"))
-//				.click();
-//		driver.findElement(By.id("activate-subscriptions-for-woocommerce")).click();
-//		wait.until(
-//				ExpectedConditions.visibilityOfElementLocated(By.xpath("//p[normalize-space()='Plugin activated.']")));
-//		driver.findElement(By.xpath("//p[normalize-space()='Plugin activated.']"));
-//		System.out.println("Activation Success message printed");
+		driver.findElement(By.cssSelector(
+				"a[class='wp-has-submenu wp-not-current-submenu menu-top menu-icon-plugins'] div[class='wp-menu-name']"))
+				.click();
+		driver.findElement(By.id("activate-subscriptions-for-woocommerce")).click();
+		wait.until(
+				ExpectedConditions.visibilityOfElementLocated(By.xpath("//p[normalize-space()='Plugin activated.']")));
+		driver.findElement(By.xpath("//p[normalize-space()='Plugin activated.']"));
+		System.out.println("Activation Success message printed");
 
 		Actions actions = new Actions(driver);
 		WebElement MakeWebBetter = driver.findElement(By.xpath("//div[normalize-space()='MakeWebBetter']"));
@@ -126,7 +129,7 @@ public class Test06_FunctionalTesting {
 			}
 		}
 
-		// Create subscription Product1
+//		// Create subscription Product1
 		driver.findElement(By.xpath("//div[normalize-space()='Products']")).click();
 		driver.findElement(By.xpath("//a[@href='post-new.php?post_type=product']")).click();
 		driver.findElement(By.xpath("//input[@id='title']")).sendKeys("Subscription product1");
@@ -156,7 +159,7 @@ public class Test06_FunctionalTesting {
 		driver.findElement(By.xpath("//input[@id='mwb_sfw_subscription_initial_signup_price']")).clear();
 		driver.findElement(By.xpath("//input[@id='mwb_sfw_subscription_initial_signup_price']")).sendKeys("10");
 		driver.findElement(By.xpath("//input[@id='mwb_sfw_subscription_free_trial_number']")).clear();
-		// driver.findElement(By.xpath("//input[@id='mwb_sfw_subscription_free_trial_number']")).sendKeys("1");
+		// mwb_sfw_subscription_free_trial_number not filled in this product.
 
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 		js.executeScript("window.scrollBy(0,-1000)");
@@ -198,9 +201,9 @@ public class Test06_FunctionalTesting {
 		driver.findElement(By.xpath("//input[@id='mwb_sfw_subscription_expiry_number']")).clear();
 		driver.findElement(By.xpath("//input[@id='mwb_sfw_subscription_expiry_number']")).sendKeys("5");
 		driver.findElement(By.xpath("//input[@id='mwb_sfw_subscription_initial_signup_price']")).clear();
-		// driver.findElement(By.xpath("//input[@id='mwb_sfw_subscription_initial_signup_price']")).sendKeys("10");
+		// mwb_sfw_subscription_initial_signup_price not filled in this product.
 		driver.findElement(By.xpath("//input[@id='mwb_sfw_subscription_free_trial_number']")).clear();
-		// driver.findElement(By.xpath("//input[@id='mwb_sfw_subscription_free_trial_number']")).sendKeys("1");
+		// mwb_sfw_subscription_free_trial_number not filled in this product.
 
 		js.executeScript("window.scrollBy(0,-1000)");
 		driver.findElement(By.xpath("//input[@id='publish']")).click();
@@ -284,7 +287,7 @@ public class Test06_FunctionalTesting {
 		driver.findElement(By.xpath("//input[@id='mwb_sfw_subscription_expiry_number']")).clear();
 		driver.findElement(By.xpath("//input[@id='mwb_sfw_subscription_expiry_number']")).sendKeys("5");
 		driver.findElement(By.xpath("//input[@id='mwb_sfw_subscription_initial_signup_price']")).clear();
-		// driver.findElement(By.xpath("//input[@id='mwb_sfw_subscription_initial_signup_price']")).sendKeys("10");
+		// mwb_sfw_subscription_initial_signup_price not filled in this product
 		driver.findElement(By.xpath("//input[@id='mwb_sfw_subscription_free_trial_number']")).clear();
 		driver.findElement(By.xpath("//input[@id='mwb_sfw_subscription_free_trial_number']")).sendKeys("1");
 
@@ -298,13 +301,14 @@ public class Test06_FunctionalTesting {
 		System.out.println("Subscription Product4 Displayed at store");
 		System.out.println(" ");
 
-		// Place order for Subscription product
-
-		driver.get("http://localhost:10013/product/subscription-product/");
+		// Place order for Subscription product1
+		driver.get("http://localhost:10013/product/subscription-product1/");
 		driver.findElement(By.xpath("//button[normalize-space()='TEST ADD']")).click();
 		driver.findElement(
 				By.xpath("//div[@role='alert']//a[@class='button wc-forward'][normalize-space()='View cart']")).click();
-		driver.get("http://localhost:10013/product/subscription-product/");
+		System.out.println("Subscription product1 order:"
+				+ driver.findElement(By.xpath("//a[normalize-space()='Subscription product1']")).isDisplayed());
+		driver.get("http://localhost:10013/product/subscription-product2/");
 		driver.findElement(By.xpath("//button[normalize-space()='TEST ADD']")).click();
 		assertTrue(driver
 				.findElement(By.xpath("//li[contains(text(),'You can not add multiple subscription product in c')]"))
@@ -341,14 +345,15 @@ public class Test06_FunctionalTesting {
 		driver.findElement(By.cssSelector("#billing_email")).clear();
 		driver.findElement(By.cssSelector("#billing_email")).sendKeys("chiraggupta@makewebbetter.com");
 
-		driver.findElement(By.xpath("//li[@class='wc_payment_method payment_method_paypal']")).click();
+		WebElement paypal_p = driver.findElement(By.cssSelector("img[alt='PayPal acceptance mark']"));
+		actions.moveToElement(paypal_p).click().perform();
+		System.out.println("Clicked");
+
 		System.out.println("Paypal available:"
 				+ driver.findElement(By.xpath("//button[normalize-space()='Proceed to PayPal']")).isDisplayed());
 		driver.findElement(By.xpath("//label[normalize-space()='Credit Card (Stripe)']")).click();
 		System.out.println("Place order text displayed with stripe: "
 				+ driver.findElement(By.xpath("//button[normalize-space()='TEST PLACE ORDER']")).isDisplayed());
-		// driver.get("http://localhost:10013/cart/");
-		// driver.findElement(By.cssSelector(".remove")).click();
 		try {
 
 			driver.findElement(By.xpath("//input[@id='terms']")).isDisplayed();
@@ -358,41 +363,213 @@ public class Test06_FunctionalTesting {
 			driver.findElement(By.xpath("//button[normalize-space()='TEST PLACE ORDER']")).click();
 		}
 		driver.findElement(By.xpath("//button[normalize-space()='TEST PLACE ORDER']")).click();
+		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(
+				"//p[@class='woocommerce-notice woocommerce-notice--success woocommerce-thankyou-order-received']")));
+		String OrderID1 = driver.findElement(By.cssSelector("li[class='woocommerce-order-overview__order order'] strong")).getText();
+		System.out.println("Order ID is:" + OrderID1);
+		
+		
+		// Place order for Subscription product2
+		driver.get("http://localhost:10013/product/subscription-product2/");
+		driver.findElement(By.xpath("//button[normalize-space()='TEST ADD']")).click();
+		driver.findElement(
+				By.xpath("//div[@role='alert']//a[@class='button wc-forward'][normalize-space()='View cart']")).click();
+		System.out.println("Subscription product2 order:"
+				+ driver.findElement(By.xpath("//a[normalize-space()='Subscription product2']")).isDisplayed());
+		js1.executeScript("window.scrollBy(0,1000)");
+		driver.findElement(By.xpath("//a[normalize-space()='Proceed to checkout']")).click();
+		System.out.println("..........Current Url is: " + strUrl);
 
+		driver.findElement(By.cssSelector("#billing_first_name")).clear();
+		driver.findElement(By.cssSelector("#billing_first_name")).sendKeys("Chirag");
+		driver.findElement(By.cssSelector("#billing_last_name")).clear();
+		driver.findElement(By.cssSelector("#billing_last_name")).sendKeys("Gupta");
+
+		driver.findElement(By.cssSelector("#select2-billing_country-container")).click();
+		driver.findElement(By.cssSelector(".select2-search__field")).sendKeys("India");
+		driver.findElement(By.xpath("/html/body/span/span/span[2]/ul/li[2]")).click();
+
+		driver.findElement(By.cssSelector("#billing_address_1")).clear();
+		driver.findElement(By.cssSelector("#billing_address_1")).sendKeys("Street address");
+		driver.findElement(By.cssSelector("#billing_city")).clear();
+		driver.findElement(By.cssSelector("#billing_city")).sendKeys("LUCKNOW");
+
+		driver.findElement(By.cssSelector("#select2-billing_state-container")).click();
+		driver.findElement(By.cssSelector(".select2-search__field")).sendKeys("Uttar Pradesh");
+		driver.findElement(By.xpath("/html/body/span/span/span[2]/ul/li")).click();
+
+		driver.findElement(By.cssSelector("#billing_postcode")).clear();
+		driver.findElement(By.cssSelector("#billing_postcode")).sendKeys("226001");
+		driver.findElement(By.cssSelector("#billing_phone")).clear();
+		driver.findElement(By.cssSelector("#billing_phone")).sendKeys("2233223322");
+		driver.findElement(By.cssSelector("#billing_email")).clear();
+		driver.findElement(By.cssSelector("#billing_email")).sendKeys("chiraggupta@makewebbetter.com");
+
+		driver.findElement(By.xpath("//li[@class='wc_payment_method payment_method_stripe']")).click();
+		System.out.println("Place order text displayed with stripe: "
+				+ driver.findElement(By.xpath("//button[normalize-space()='TEST PLACE ORDER']")).isDisplayed());
+		try {
+
+			driver.findElement(By.xpath("//input[@id='terms']")).isDisplayed();
+			driver.findElement(By.xpath("//input[@id='terms']")).click();
+
+		} catch (Exception e) {
+			driver.findElement(By.xpath("//button[normalize-space()='TEST PLACE ORDER']")).click();
+		}
+		driver.findElement(By.xpath("//button[normalize-space()='TEST PLACE ORDER']")).click();
+		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(
+				"//p[@class='woocommerce-notice woocommerce-notice--success woocommerce-thankyou-order-received']")));
+		String OrderID2 = driver.findElement(By.cssSelector("li[class='woocommerce-order-overview__order order'] strong")).getText();
+		System.out.println("Order ID is:" + OrderID2);
+		
+		
+		// Place order for Subscription product3
+		driver.get("http://localhost:10013/product/subscription-product3/");
+		driver.findElement(By.xpath("//button[normalize-space()='TEST ADD']")).click();
+		driver.findElement(
+				By.xpath("//div[@role='alert']//a[@class='button wc-forward'][normalize-space()='View cart']")).click();
+		System.out.println("Subscription product3 order:"
+				+ driver.findElement(By.xpath("//a[normalize-space()='Subscription product3']")).isDisplayed());
+		js1.executeScript("window.scrollBy(0,1000)");
+		driver.findElement(By.xpath("//a[normalize-space()='Proceed to checkout']")).click();
+		System.out.println("..........Current Url is: " + strUrl);
+
+		driver.findElement(By.cssSelector("#billing_first_name")).clear();
+		driver.findElement(By.cssSelector("#billing_first_name")).sendKeys("Chirag");
+		driver.findElement(By.cssSelector("#billing_last_name")).clear();
+		driver.findElement(By.cssSelector("#billing_last_name")).sendKeys("Gupta");
+
+		driver.findElement(By.cssSelector("#select2-billing_country-container")).click();
+		driver.findElement(By.cssSelector(".select2-search__field")).sendKeys("India");
+		driver.findElement(By.xpath("/html/body/span/span/span[2]/ul/li[2]")).click();
+
+		driver.findElement(By.cssSelector("#billing_address_1")).clear();
+		driver.findElement(By.cssSelector("#billing_address_1")).sendKeys("Street address");
+		driver.findElement(By.cssSelector("#billing_city")).clear();
+		driver.findElement(By.cssSelector("#billing_city")).sendKeys("LUCKNOW");
+
+		driver.findElement(By.cssSelector("#select2-billing_state-container")).click();
+		driver.findElement(By.cssSelector(".select2-search__field")).sendKeys("Uttar Pradesh");
+		driver.findElement(By.xpath("/html/body/span/span/span[2]/ul/li")).click();
+
+		driver.findElement(By.cssSelector("#billing_postcode")).clear();
+		driver.findElement(By.cssSelector("#billing_postcode")).sendKeys("226001");
+		driver.findElement(By.cssSelector("#billing_phone")).clear();
+		driver.findElement(By.cssSelector("#billing_phone")).sendKeys("2233223322");
+		driver.findElement(By.cssSelector("#billing_email")).clear();
+		driver.findElement(By.cssSelector("#billing_email")).sendKeys("chiraggupta@makewebbetter.com");
+
+		driver.findElement(By.xpath("//li[@class='wc_payment_method payment_method_stripe']")).click();
+		System.out.println("Place order text displayed with stripe: "
+				+ driver.findElement(By.xpath("//button[normalize-space()='TEST PLACE ORDER']")).isDisplayed());
+		try {
+
+			driver.findElement(By.xpath("//input[@id='terms']")).isDisplayed();
+			driver.findElement(By.xpath("//input[@id='terms']")).click();
+
+		} catch (Exception e) {
+			driver.findElement(By.xpath("//button[normalize-space()='TEST PLACE ORDER']")).click();
+		}
+		driver.findElement(By.xpath("//button[normalize-space()='TEST PLACE ORDER']")).click();
+		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(
+				"//p[@class='woocommerce-notice woocommerce-notice--success woocommerce-thankyou-order-received']")));
+		String OrderID3 = driver.findElement(By.cssSelector("li[class='woocommerce-order-overview__order order'] strong")).getText();
+		System.out.println("Order ID is:" + OrderID3);
+		
+		
+		// Place order for Subscription product4
+		driver.get("http://localhost:10013/product/subscription-product4/");
+		driver.findElement(By.xpath("//button[normalize-space()='TEST ADD']")).click();
+		driver.findElement(
+				By.xpath("//div[@role='alert']//a[@class='button wc-forward'][normalize-space()='View cart']")).click();
+		System.out.println("Subscription product4 order:"
+				+ driver.findElement(By.xpath("//a[normalize-space()='Subscription product4']")).isDisplayed());
+		driver.get("http://localhost:10013/cart/");
+		js1.executeScript("window.scrollBy(0,1000)");
+		driver.findElement(By.xpath("//a[normalize-space()='Proceed to checkout']")).click();
+		System.out.println("..........Current Url is: " + strUrl);
+
+		driver.findElement(By.cssSelector("#billing_first_name")).clear();
+		driver.findElement(By.cssSelector("#billing_first_name")).sendKeys("Chirag");
+		driver.findElement(By.cssSelector("#billing_last_name")).clear();
+		driver.findElement(By.cssSelector("#billing_last_name")).sendKeys("Gupta");
+
+		driver.findElement(By.cssSelector("#select2-billing_country-container")).click();
+		driver.findElement(By.cssSelector(".select2-search__field")).sendKeys("India");
+		driver.findElement(By.xpath("/html/body/span/span/span[2]/ul/li[2]")).click();
+
+		driver.findElement(By.cssSelector("#billing_address_1")).clear();
+		driver.findElement(By.cssSelector("#billing_address_1")).sendKeys("Street address");
+		driver.findElement(By.cssSelector("#billing_city")).clear();
+		driver.findElement(By.cssSelector("#billing_city")).sendKeys("LUCKNOW");
+
+		driver.findElement(By.cssSelector("#select2-billing_state-container")).click();
+		driver.findElement(By.cssSelector(".select2-search__field")).sendKeys("Uttar Pradesh");
+		driver.findElement(By.xpath("/html/body/span/span/span[2]/ul/li")).click();
+
+		driver.findElement(By.cssSelector("#billing_postcode")).clear();
+		driver.findElement(By.cssSelector("#billing_postcode")).sendKeys("226001");
+		driver.findElement(By.cssSelector("#billing_phone")).clear();
+		driver.findElement(By.cssSelector("#billing_phone")).sendKeys("2233223322");
+		driver.findElement(By.cssSelector("#billing_email")).clear();
+		driver.findElement(By.cssSelector("#billing_email")).sendKeys("chiraggupta@makewebbetter.com");
+
+		driver.findElement(By.xpath("//li[@class='wc_payment_method payment_method_stripe']")).click();
+		System.out.println("Place order text displayed with stripe: "
+				+ driver.findElement(By.xpath("//button[normalize-space()='TEST PLACE ORDER']")).isDisplayed());
+		// Checking Manual payment gateways are not available.
+		assertFalse(driver.findElement(By.xpath("//label[normalize-space()='Direct bank transfer']")).isDisplayed());
+		assertFalse(driver.findElement(By.xpath("//label[normalize-space()='Check payments']")).isDisplayed());
+		assertFalse(driver.findElement(By.xpath("//label[normalize-space()='Cash on delivery']")).isDisplayed());
+//		driver.get("http://localhost:10013/cart/");
+//		driver.findElement(By.cssSelector(".remove")).click();
+		try {
+
+			driver.findElement(By.xpath("//input[@id='terms']")).isDisplayed();
+			driver.findElement(By.xpath("//input[@id='terms']")).click();
+
+		} catch (Exception e) {
+			driver.findElement(By.xpath("//button[normalize-space()='TEST PLACE ORDER']")).click();
+		}
+		driver.findElement(By.xpath("//button[normalize-space()='TEST PLACE ORDER']")).click();
+		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(
+				"//p[@class='woocommerce-notice woocommerce-notice--success woocommerce-thankyou-order-received']")));
+		String OrderID4 = driver.findElement(By.cssSelector("li[class='woocommerce-order-overview__order order'] strong")).getText();
+		System.out.println("Order ID is:" + OrderID4);
+		
+		
 		// Deactivate plugin code
-//		driver.findElement(By.cssSelector(
-//				"a[class='wp-has-submenu wp-not-current-submenu menu-top menu-icon-plugins'] div[class='wp-menu-name']"))
-//				.click();
-//		driver.findElement(By.id("deactivate-subscriptions-for-woocommerce")).click();
-//		try {
-//
-//			Actions actions1 = new Actions(driver);
-//			WebElement deactivation = driver
-//					.findElement(By.cssSelector(".mwb-sfw-on-boarding-wrapper.mdc-dialog__surface"));
-//			actions1.moveToElement(deactivation).build().perform();
-//			js.executeScript("window.scrollBy(0,1000)");
-//			if (deactivation.isDisplayed() == true) {
-//				driver.findElement(
-//						By.xpath("//a[@class='mwb-sfw-deactivation-no_thanks mdc-button mdc-ripple-upgraded']"))
-//						.click();
-//				System.out.println("Deactivation form present");
-//				wait.until(ExpectedConditions
-//						.visibilityOfElementLocated(By.xpath("//p[normalize-space()='Plugin deactivated.']")));
-//				driver.findElement(By.xpath("//p[normalize-space()='Plugin deactivated.']"));
-//				System.out.println("Deactivation Success message printed");
-//
-//			}
-//
-//		} catch (Exception e) {
-//			wait.until(ExpectedConditions
-//					.visibilityOfElementLocated(By.xpath("//p[normalize-space()='Plugin deactivated.']")));
-//			driver.findElement(By.xpath("//p[normalize-space()='Plugin deactivated.']"));
-//			System.out.println("Deactivation Success message printed");
-//			System.out.println("Deactivation form not present");
-//		}
+		driver.get("http://localhost:10013/wp-admin/plugins.php");
+		driver.findElement(By.id("deactivate-subscriptions-for-woocommerce")).click();
+		try {
+
+			Actions actions1 = new Actions(driver);
+			WebElement deactivation = driver
+					.findElement(By.cssSelector(".mwb-sfw-on-boarding-wrapper.mdc-dialog__surface"));
+			actions1.moveToElement(deactivation).build().perform();
+			js.executeScript("window.scrollBy(0,1000)");
+			if (deactivation.isDisplayed() == true) {
+				driver.findElement(
+						By.xpath("//a[@class='mwb-sfw-deactivation-no_thanks mdc-button mdc-ripple-upgraded']"))
+						.click();
+				System.out.println("Deactivation form present");
+				wait.until(ExpectedConditions
+						.visibilityOfElementLocated(By.xpath("//p[normalize-space()='Plugin deactivated.']")));
+				driver.findElement(By.xpath("//p[normalize-space()='Plugin deactivated.']"));
+				System.out.println("Deactivation Success message printed");
+
+			}
+
+		} catch (Exception e) {
+			wait.until(ExpectedConditions
+					.visibilityOfElementLocated(By.xpath("//p[normalize-space()='Plugin deactivated.']")));
+			driver.findElement(By.xpath("//p[normalize-space()='Plugin deactivated.']"));
+			System.out.println("Deactivation Success message printed");
+			System.out.println("Deactivation form not present");
+		}
 
 		// Close Window
-		// driver.close();
+		driver.close();
 	}
 
 }
